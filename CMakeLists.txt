@@ -4,6 +4,7 @@ project(lipuma VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -19,6 +20,8 @@ endif()
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Gui REQUIRED)
+find_package(FastNoise2)
+
 include_directories(${Qt5Gui_INCLUDE_DIRS}, {Qt5Widgets_INCLUDE_DIRS})
 include_directories(src)
 

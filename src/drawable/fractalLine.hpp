@@ -11,7 +11,8 @@
 #include "drawable/editPoint.hpp"
 #include "drawable/drawable.hpp"
 
-namespace Lipuma {
+namespace Lipuma
+{
 
 	/*
 		Fractally deformed line with configurable deformation settings.
@@ -29,7 +30,7 @@ namespace Lipuma {
 		void initalizeEditPoints();
 		void write(QDataStream&);
 		QRectF boundingRect() const override;
-		void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
+		void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 		QVariant itemChange(GraphicsItemChange, const QVariant &val) override;
 

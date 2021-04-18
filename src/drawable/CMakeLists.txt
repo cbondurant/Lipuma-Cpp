@@ -5,4 +5,4 @@ add_library(drawable
 	fractalCurve.cpp
 )
 
-target_link_libraries(drawable Qt5::Gui Qt5::Widgets FastNoise)
+target_link_libraries(drawable Qt5::Gui Qt5::Widgets FastNoise math)

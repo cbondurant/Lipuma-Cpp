@@ -4,10 +4,11 @@
 
 #include "catchQtPrintOverrides.hpp"
 
-#include "pointHelper.hpp"
+#include "math/points.hpp"
+#include "math/beizer.hpp"
 
 
-TEST_CASE("Consistent Linear interpolation", "[point_helper]"){
+TEST_CASE("Consistent Linear interpolation", "[math]"){
 
 	QPointF point(0,0);
 
@@ -25,7 +26,7 @@ TEST_CASE("Consistent Linear interpolation", "[point_helper]"){
 	}
 }
 
-TEST_CASE("Vector Normalization", "[point_helper]"){
+TEST_CASE("Vector Normalization", "[math]"){
 	QPointF point(10,0);
 
 	SECTION("Length of a normalized Vector should be 1"){
@@ -46,7 +47,7 @@ TEST_CASE("Vector Normalization", "[point_helper]"){
 	}
 }
 
-TEST_CASE("Vector Distance", "[point_helper]"){
+TEST_CASE("Vector Distance", "[math]"){
 
 	// Vertical, horizontal, and 45-degree vectors
 	auto point = GENERATE(QPointF(-1,0), QPointF(0,-1), QPointF(1,0), QPointF(0,1), QPointF(sqrt(0.5), sqrt(0.5)));
@@ -57,4 +58,8 @@ TEST_CASE("Vector Distance", "[point_helper]"){
 	SECTION("Distance does not fail when the vector is 0"){
 		REQUIRE(Lipuma::distance(QPointF()) == 0);
 	}
+}
+
+TEST_CASE("Beizer Curve implementation", "[math]"){
+
 }

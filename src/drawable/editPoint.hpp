@@ -5,8 +5,10 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPointF>
 
-namespace Lipuma {
-	class EditPoint : public QGraphicsObject {
+namespace Lipuma
+{
+	class EditPoint : public QGraphicsObject
+	{
 
 		Q_OBJECT
 
@@ -17,7 +19,7 @@ namespace Lipuma {
 		void mouseReleaseEvent(QGraphicsSceneMouseEvent *e) override;
 
 		QRectF boundingRect() const override;
-		void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+		void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 	signals:
 		// Emits when the point is selected and dragged

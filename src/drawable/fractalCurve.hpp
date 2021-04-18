@@ -12,8 +12,10 @@
 
 #include "drawable/editPoint.hpp"
 #include "drawable/drawable.hpp"
+#include "math/beizer.hpp"
 
-namespace Lipuma {
+namespace Lipuma
+{
 
 	/*
 		Fractally deformed line with configurable deformation settings.
@@ -32,7 +34,7 @@ namespace Lipuma {
 		void initalizeNoise();
 		QRectF boundingRect() const override;
 		QPainterPath shape() const override;
-		void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
+		void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 		QVariant itemChange(GraphicsItemChange, const QVariant &val) override;
 
@@ -67,6 +69,8 @@ namespace Lipuma {
 		EditPoint *startPt, *innerStartPt, *endPt, *innerEndPt;
 
 		QPointF start, end;
+
+		BeizerCurve curve;
 
 		float frequency;
 		qint32 seed;
