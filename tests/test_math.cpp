@@ -5,7 +5,7 @@
 #include "catchQtPrintOverrides.hpp"
 
 #include "math/points.hpp"
-#include "math/beizer.hpp"
+#include "math/bezier.hpp"
 
 
 TEST_CASE("Consistent Linear interpolation", "[math]"){
@@ -60,6 +60,6 @@ TEST_CASE("Vector Distance", "[math]"){
 	}
 }
 
-TEST_CASE("Beizer Curve implementation", "[math]"){
+TEST_CASE("Bezier Curve implementation", "[math]"){
 
 }

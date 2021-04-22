@@ -1,4 +1,4 @@
 add_library(math
-	beizer.cpp
+	bezier.cpp
 	points.cpp
 )

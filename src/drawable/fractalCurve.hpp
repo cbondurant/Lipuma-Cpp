@@ -12,7 +12,7 @@
 
 #include "drawable/editPoint.hpp"
 #include "drawable/drawable.hpp"
-#include "math/beizer.hpp"
+#include "math/bezier.hpp"
 
 namespace Lipuma
 {
@@ -70,7 +70,7 @@ namespace Lipuma
 
 		QPointF start, end;
 
-		BeizerCurve curve;
+		BezierCurve curve;
 
 		float frequency;
 		qint32 seed;

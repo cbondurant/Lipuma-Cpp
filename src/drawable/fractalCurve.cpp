@@ -12,7 +12,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QWidget>
 
-#include "math/beizer.hpp"
+#include "math/bezier.hpp"
 #include "drawable/editPoint.hpp"
 #include "math/points.hpp"
 
@@ -81,7 +81,7 @@ namespace Lipuma {
 		is >> seed;
 		QPointF a,b,c,d;
 		is >> a >> b >> c >> d;
-		curve = BeizerCurve(a,b,c,d);
+		curve = BezierCurve(a,b,c,d);
 		setStart(a);
 		setEnd(b);
 		setInnerStart(b);
@@ -212,7 +212,7 @@ namespace Lipuma {
 		QPainterPath path;
 
 		std::vector<float>::iterator ci = curveNoise.begin();
-		for (BeizerCurve::PointTangentIterator i = curve.sweepCurveIterator(POINTS); i != curve.end(); ++i)
+		for (BezierCurve::PointTangentIterator i = curve.sweepCurveIterator(POINTS); i != curve.end(); ++i)
 		{
 			QPointF point = i->point;
 			QPointF perp = i->tangent.transposed();
