@@ -2,13 +2,16 @@
 #define DRAWABLE_FRACTAL_CURVE_HPP
 
 #include <random>
+#include <iostream>
 
 #include <FastNoise/FastNoise.h>
 #include <QGraphicsObject>
+#include <QDataStream>
 #include <QPointF>
 #include <QRectF>
 
 #include "drawable/editPoint.hpp"
+#include "drawable/drawable.hpp"
 
 namespace Lipuma {
 
@@ -18,10 +21,15 @@ namespace Lipuma {
 		Lacunarity: how much the frequency increases each iteration.
 		Gain: how much the amplitude of each iteration decreases.
 	*/
-	class FractalCurve : public QGraphicsObject {
+	class FractalCurve : public Drawable {
 
 	public:
 		FractalCurve(QPointF, QPointF);
+		FractalCurve(QDataStream&);
+		void write(QDataStream&) override;
+		static qint8 DrawableType();
+		void initalizeEditPoints();
+		void initalizeNoise();
 		QRectF boundingRect() const override;
 		QPainterPath shape() const override;
 		void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
@@ -47,6 +55,9 @@ namespace Lipuma {
 		float getFrequency();
 		void setFrequency(float);
 
+
+		friend std::ostream& operator<<(std::ostream& os, const FractalCurve& dt);
+
 	private:
 		FastNoise::SmartNode<FastNoise::Fractal<>> noise;
 		static const int SEGMENTS = 100;
@@ -58,7 +69,7 @@ namespace Lipuma {
 		QPointF start, end;
 
 		float frequency;
-		int seed;
+		qint32 seed;
 		static std::default_random_engine rand;
 	};
 }

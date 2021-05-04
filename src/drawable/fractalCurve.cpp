@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <random>
+#include <iostream>
 
 #include <FastNoise/FastNoise.h>
 #include <QColor>
@@ -14,6 +15,8 @@
 #include "drawable/editPoint.hpp"
 #include "pointHelper.hpp"
 
+
+
 namespace Lipuma {
 
 	inline QPointF computeBeizer(const QPointF a, const QPointF b, const QPointF c, const QPointF d, qreal x){
@@ -25,16 +28,16 @@ namespace Lipuma {
 
 	std::default_random_engine FractalCurve::rand;
 
-	FractalCurve::FractalCurve(QPointF s, QPointF e){
-		seed = FractalCurve::rand();
-		setFlag(QGraphicsItem::ItemIsSelectable);
+	void FractalCurve::initalizeNoise(){
 		noise = FastNoise::New<FastNoise::FractalFBm>();
 		noise->SetSource(FastNoise::New<FastNoise::Simplex>());
 		frequency = 0.02;
 		noise->SetOctaveCount(5);
 		noise->SetLacunarity(2.0f);
 		noise->SetGain(.9);
+	}
 
+	void FractalCurve::initalizeEditPoints(){
 		startPt = new EditPoint();
 		startPt->setParentItem(this);
 		startPt->setVisible(false);
@@ -57,9 +60,44 @@ namespace Lipuma {
 		endPt->setVisible(false);
 		endPt->setZValue(-1);
 		connect(endPt, &EditPoint::pointMoved, this, &FractalCurve::setEnd);
+	}
 
+	FractalCurve::FractalCurve(QPointF s, QPointF e){
+		seed = FractalCurve::rand();
+		setFlag(QGraphicsItem::ItemIsSelectable);
+		initalizeEditPoints();
+		initalizeNoise();
 		setStart(s);
 		setEnd(e);
+	}
+
+	FractalCurve::FractalCurve(QDataStream& is){
+		setFlag(QGraphicsItem::ItemIsSelectable);
+		initalizeEditPoints();
+		initalizeNoise();
+		is >> seed;
+		QPointF pt;
+		is >> pt;
+		setStart(pt);
+		is >> pt;
+		setEnd(pt);
+		is >> pt;
+		setInnerStart(pt);
+		is >> pt;
+		setInnerEnd(pt);
+	}
+
+	qint8 FractalCurve::DrawableType(){
+		return DrawableSerializeTypes::SerializeFractalCurve;
+	}
+
+	void FractalCurve::write(QDataStream& os){
+		os << DrawableType();
+		os << (qint32)seed;
+		os << mapToScene(start);
+		os << mapToScene(end);
+		os << mapToScene(innerStartPt->pos());
+		os << mapToScene(innerEndPt->pos());
 	}
 
 	QPainterPath FractalCurve::shape() const {

@@ -1,4 +1,5 @@
 add_library(drawable
+	drawable.cpp
 	editPoint.cpp
 	fractalLine.cpp
 	fractalCurve.cpp

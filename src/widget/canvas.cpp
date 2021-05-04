@@ -4,9 +4,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <set>
+#include <type_traits>
 
 #include <QGraphicsView>
 #include <QGraphicsItem>
+#include <QFileDialog>
 #include <QKeyEvent>
 #include <QPointF>
 #include <QPainter>
@@ -71,6 +73,43 @@ namespace Lipuma {
 				delete *i;
 			}
 			e->accept();
+		}
+		if (e->key() == Qt::Key_W){
+			auto filename = QFileDialog::getSaveFileName(this, "Open Image", "~/Documents", "Lipuma Files (*.lmp)");
+			QFile file(filename);
+			if (!file.open(QIODevice::WriteOnly)){
+				qWarning("File failed!");
+			}else{
+				QDataStream stream(&file);
+				for (auto i : scene()->items()){
+					if (i->type() == Drawable::Type){
+						dynamic_cast<Drawable*>(i)->write(stream);
+					}
+				}
+				qWarning("File written.");
+			}
+		}
+		if (e->key() == Qt::Key_R){
+			auto filename = QFileDialog::getOpenFileName(this, "Open Image", "~/Documents", "Lipuma Files (*.lmp)");
+			QFile file(filename);
+			if (!file.open(QIODevice::ReadOnly)){
+				qWarning("File failed!");
+			}else{
+				QDataStream stream(&file);
+				scene()->clear();
+				while (!stream.atEnd()){
+					qint8 type;
+					stream >> type;
+					switch(type){
+						case (DrawableSerializeTypes::SerializeFractalCurve):
+							scene()->addItem(new FractalCurve(stream));
+							break;
+						case (DrawableSerializeTypes::SerializeFractalLine):
+							scene()->addItem(new FractalLine(stream));
+							break;
+					}
+				}
+			}
 		}
 		if (!e->isAccepted()) QGraphicsView::keyPressEvent(e);
 	}

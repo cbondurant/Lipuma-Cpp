@@ -9,6 +9,7 @@
 #include <QRectF>
 
 #include "drawable/editPoint.hpp"
+#include "drawable/drawable.hpp"
 
 namespace Lipuma {
 
@@ -18,10 +19,15 @@ namespace Lipuma {
 		Lacunarity: how much the frequency increases each iteration.
 		Gain: how much the amplitude of each iteration decreases.
 	*/
-	class FractalLine : public QGraphicsObject {
+	class FractalLine : public Drawable {
 
 	public:
 		FractalLine(QPointF, QPointF);
+		FractalLine(QDataStream&);
+		static qint8 DrawableType();
+		void initalizeNoise();
+		void initalizeEditPoints();
+		void write(QDataStream&);
 		QRectF boundingRect() const override;
 		void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
 
@@ -34,10 +40,10 @@ namespace Lipuma {
 
 		// Set the starting point of the line in canvas space
 		void setStart(QPointF);
-		
+
 		// Set the endpoint of the line in canvas space
 		void setEnd(QPointF);
-		
+
 		// Get frequency of crossing the zero per unit
 		float getFrequency();
 		void setFrequency(float);

@@ -18,15 +18,16 @@ namespace Lipuma {
 
 	std::default_random_engine FractalLine::rand;
 
-	FractalLine::FractalLine(QPointF s, QPointF e){
-		seed = FractalLine::rand();
-		setFlag(QGraphicsItem::ItemIsSelectable);
+	void FractalLine::initalizeNoise(){
 		noise = FastNoise::New<FastNoise::FractalFBm>();
 		noise->SetSource(FastNoise::New<FastNoise::Simplex>());
 		frequency = 0.02;
 		noise->SetOctaveCount(5);
 		noise->SetLacunarity(2.0f);
 		noise->SetGain(.9);
+	}
+
+	void FractalLine::initalizeEditPoints(){
 		startPt = new EditPoint();
 		startPt->setParentItem(this);
 		startPt->setVisible(false);
@@ -35,8 +36,38 @@ namespace Lipuma {
 		endPt->setParentItem(this);
 		endPt->setVisible(false);
 		connect(endPt, &EditPoint::pointMoved, this, &FractalLine::setEnd);
+	}
+
+	FractalLine::FractalLine(QPointF s, QPointF e){
+		seed = FractalLine::rand();
+		setFlag(QGraphicsItem::ItemIsSelectable);
+		initalizeEditPoints();
+		initalizeNoise();
 		setStart(s);
 		setEnd(e);
+	}
+
+	FractalLine::FractalLine(QDataStream& stream){
+		stream >> seed;
+		setFlag(QGraphicsItem::ItemIsSelectable);
+		initalizeNoise();
+		initalizeEditPoints();
+		QPointF pt;
+		stream >> pt;
+		setStart(pt);
+		stream >> pt;
+		setEnd(pt);
+	}
+
+	void FractalLine::write(QDataStream& stream){
+		stream << DrawableType();
+		stream << seed;
+		stream << mapToScene(start);
+		stream << mapToScene(end);
+	}
+
+	qint8 FractalLine::DrawableType(){
+		return DrawableSerializeTypes::SerializeFractalLine;
 	}
 
 	QRectF FractalLine::boundingRect() const {
