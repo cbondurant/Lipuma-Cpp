@@ -17,6 +17,7 @@
 #include "tool/fractalTool.hpp"
 #include "tool/tool.hpp"
 #include "tool/toolManager.hpp"
+#include "file/serializer.hpp"
 
 namespace Lipuma {
 	Canvas::Canvas(QGraphicsScene *parent) : QGraphicsView(parent){
@@ -75,22 +76,11 @@ namespace Lipuma {
 			e->accept();
 		}
 		if (e->key() == Qt::Key_W){
-			auto filename = QFileDialog::getSaveFileName(this, "Open Image", "~/Documents", "Lipuma Files (*.lmp)");
-			QFile file(filename);
-			if (!file.open(QIODevice::WriteOnly)){
-				qWarning("File failed!");
-			}else{
-				QDataStream stream(&file);
-				for (auto i : scene()->items()){
-					if (i->type() == Drawable::Type){
-						dynamic_cast<Drawable*>(i)->write(stream);
-					}
-				}
-				qWarning("File written.");
-			}
+			QString filename = QFileDialog::getSaveFileName(this, "Open Image", "$HOME/Documents/", "Lipuma Files (*.lmp)");
+			SerializeCanvas(this, &filename);
 		}
 		if (e->key() == Qt::Key_R){
-			auto filename = QFileDialog::getOpenFileName(this, "Open Image", "~/Documents", "Lipuma Files (*.lmp)");
+			auto filename = QFileDialog::getOpenFileName(this, "Open Image", "$HOME/Documents/", "Lipuma Files (*.lmp)");
 			QFile file(filename);
 			if (!file.open(QIODevice::ReadOnly)){
 				qWarning("File failed!");

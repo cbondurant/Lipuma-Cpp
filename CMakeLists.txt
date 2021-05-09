@@ -29,4 +29,4 @@ add_subdirectory(tests)
 add_executable(lipuma
 	src/main.cpp
 )
-target_link_libraries(lipuma Qt5::Gui Qt5::Widgets widget drawable tool)
+target_link_libraries(lipuma Qt5::Gui Qt5::Widgets widget drawable tool file)
