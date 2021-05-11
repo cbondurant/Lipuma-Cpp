@@ -57,6 +57,7 @@ namespace Lipuma {
 		setStart(pt);
 		stream >> pt;
 		setEnd(pt);
+		stream >> frequency;
 	}
 
 	void FractalLine::write(QDataStream& stream){
@@ -64,6 +65,7 @@ namespace Lipuma {
 		stream << seed;
 		stream << mapToScene(start);
 		stream << mapToScene(end);
+		stream << frequency;
 	}
 
 	qint8 FractalLine::DrawableType(){

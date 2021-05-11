@@ -7,6 +7,8 @@
 #include "drawable/drawable.hpp"
 #include "file/serializer.hpp"
 
+const quint32 MAGIC = 0x4c504d41; // hex LPMA
+
 namespace Lipuma{
 	void SerializeCanvas(Canvas* canvas, QString* filename){
 		QFile file(*filename);
@@ -14,6 +16,7 @@ namespace Lipuma{
 			qWarning("File failed!");
 		}else{
 			QDataStream stream(&file);
+			stream << MAGIC;
 			for (auto i : canvas->scene()->items()){
 				if (i->type() == Drawable::Type){
 					dynamic_cast<Drawable*>(i)->write(stream);
@@ -30,6 +33,9 @@ namespace Lipuma{
 			qWarning("File failed!");
 		}else{
 			QDataStream stream(&file);
+			qint32 magic;
+			stream >> magic;
+			if (magic != MAGIC){qWarning("File load failed: invalid magic number"); return nullptr;}
 			while (!stream.atEnd()){
 				qint8 type;
 				stream >> type;

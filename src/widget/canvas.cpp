@@ -75,32 +75,6 @@ namespace Lipuma {
 			}
 			e->accept();
 		}
-		if (e->key() == Qt::Key_W){
-			QString filename = QFileDialog::getSaveFileName(this, "Open Image", "$HOME/Documents/", "Lipuma Files (*.lmp)");
-			SerializeCanvas(this, &filename);
-		}
-		if (e->key() == Qt::Key_R){
-			auto filename = QFileDialog::getOpenFileName(this, "Open Image", "$HOME/Documents/", "Lipuma Files (*.lmp)");
-			QFile file(filename);
-			if (!file.open(QIODevice::ReadOnly)){
-				qWarning("File failed!");
-			}else{
-				QDataStream stream(&file);
-				scene()->clear();
-				while (!stream.atEnd()){
-					qint8 type;
-					stream >> type;
-					switch(type){
-						case (DrawableSerializeTypes::SerializeFractalCurve):
-							scene()->addItem(new FractalCurve(stream));
-							break;
-						case (DrawableSerializeTypes::SerializeFractalLine):
-							scene()->addItem(new FractalLine(stream));
-							break;
-					}
-				}
-			}
-		}
 		if (!e->isAccepted()) QGraphicsView::keyPressEvent(e);
 	}
 

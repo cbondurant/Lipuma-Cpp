@@ -85,6 +85,7 @@ namespace Lipuma {
 		setInnerStart(pt);
 		is >> pt;
 		setInnerEnd(pt);
+		is >> frequency;
 	}
 
 	qint8 FractalCurve::DrawableType(){
@@ -94,10 +95,13 @@ namespace Lipuma {
 	void FractalCurve::write(QDataStream& os){
 		os << DrawableType();
 		os << (qint32)seed;
+
 		os << mapToScene(start);
 		os << mapToScene(end);
 		os << mapToScene(innerStartPt->pos());
 		os << mapToScene(innerEndPt->pos());
+
+		os << frequency;
 	}
 
 	QPainterPath FractalCurve::shape() const {
