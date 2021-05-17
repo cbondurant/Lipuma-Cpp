@@ -10,8 +10,8 @@
 const quint32 MAGIC = 0x4c504d41; // hex LPMA
 
 namespace Lipuma{
-	void SerializeCanvas(Canvas* canvas, QString* filename){
-		QFile file(*filename);
+	void SerializeCanvas(Canvas* canvas, QString& filename){
+		QFile file(filename);
 		if (!file.open(QIODevice::WriteOnly)){
 			qWarning("File failed!");
 		}else{
@@ -26,8 +26,8 @@ namespace Lipuma{
 		}
 	}
 
-	Canvas* LoadCanvas(QString* filename){
-		QFile file(*filename);
+	Canvas* LoadCanvas(QString& filename){
+		QFile file(filename);
 		Canvas* canvas = new Canvas(new QGraphicsScene());
 		if (!file.open(QIODevice::ReadOnly)){
 			qWarning("File failed!");

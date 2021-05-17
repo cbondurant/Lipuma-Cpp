@@ -5,8 +5,8 @@
 #include "widget/canvas.hpp"
 
 namespace Lipuma {
-	void SerializeCanvas(Canvas*, QString*);
-	Canvas* LoadCanvas(QString*);
+	void SerializeCanvas(Canvas*, QString&);
+	Canvas* LoadCanvas(QString&);
 }
 
 #endif

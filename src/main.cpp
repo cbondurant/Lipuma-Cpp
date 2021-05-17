@@ -22,13 +22,13 @@ int main (int argc, char **argv){
 	QAction* saveAction = fileMenu->addAction("&Save As");
 	QObject::connect(saveAction, &QAction::triggered, fileMenu,  [canvas, mainWin](){
 		QString s = QFileDialog::getSaveFileName(mainWin, "Open Image", "$HOME/Documents/", "Lipuma Files (*.lpm)");
-		Lipuma::SerializeCanvas(canvas,&s);
+		Lipuma::SerializeCanvas(canvas,s);
 	});
 
 	QAction* loadAction = fileMenu->addAction("&Open Canvas");
 	QObject::connect(loadAction, &QAction::triggered, mainWin,  [mainWin](){
 		QString s = QFileDialog::getOpenFileName(mainWin, "Open Image", "$HOME/Documents/", "Lipuma Files (*.lpm)");
-		Lipuma::Canvas* newcan = Lipuma::LoadCanvas(&s);
+		Lipuma::Canvas* newcan = Lipuma::LoadCanvas(s);
 		if (newcan){
 			mainWin->setCentralWidget(newcan);
 		}
