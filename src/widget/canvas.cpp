@@ -45,10 +45,10 @@ namespace Lipuma {
 	void Canvas::wheelEvent(QWheelEvent *e){
 		_currentTool->wheelEvent(e, this);
 		if (!e->isAccepted()){
-			if (e->angleDelta().y() > 0){
+			if (e->angleDelta().y() < 0){
 				scale(1.0/1.5, 1.0/1.5);
 			}
-			if (e->angleDelta().y() < 0){
+			if (e->angleDelta().y() > 0){
 				scale(1.5, 1.5);
 			}
 
