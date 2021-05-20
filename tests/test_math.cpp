@@ -61,5 +61,33 @@ TEST_CASE("Vector Distance", "[math]"){
 }
 
 TEST_CASE("Bezier Curve implementation", "[math]"){
+	QPointF start {0,0};
+	QPointF end {15,0};
+	auto curve = Lipuma::BezierCurve(start, QPointF(5,5),QPointF(10, 5), end);
 
+	int x = GENERATE(2,3,4,5,10,20,50,100);
+	SECTION("Generating a Beizer curve iterator with N returns N points", "[math]"){
+		std::vector<QPointF> v;
+		for (auto i = curve.sweepCurveIterator(x); i != curve.end(); ++i){
+			v.emplace(v.end(), i->point);
+		}
+		REQUIRE(v.size() == x);
+		v.clear();
+		for (auto i = curve.sweepLinearCurveIterator(x); i != curve.end(); ++i){
+			v.emplace(v.end(), i->point);
+		}
+		REQUIRE(v.size() == x);
+	}
+
+	SECTION("The first point of an iterator should be equal to the start point","[math]"){
+		Lipuma::BezierCurve::PointTangentIterator &i = curve.sweepCurveIterator(x);
+		REQUIRE(i->point==start);
+		i = curve.sweepLinearCurveIterator(x);
+		REQUIRE(i->point==start);
+	}
+
+	SECTION("Point (0) should be equal to start and Point(1) equal to end"){
+		REQUIRE(curve.getPoint(0) == start);
+		REQUIRE(curve.getPoint(1) == end);
+	}
 }
