@@ -60,7 +60,7 @@ namespace Lipuma
 
 	PointTangent BezierCurve::StandardPointTangentIterator::operator*() const
 	{
-		if (segments == 0 | currentSegment > segments){
+		if (segments == 0 | currentSegment >= segments){
 			return PointTangent{QPointF(DBL_MAX, DBL_MAX), QPointF(DBL_MAX, DBL_MAX)};
 		}
 		const qreal x = static_cast<float>(currentSegment) / static_cast<float>(segments);
@@ -117,7 +117,8 @@ namespace Lipuma
 
 	BezierCurve::LinearPointTangentIterator& BezierCurve::sweepLinearCurveIterator(const int elements) const
 	{
-		BezierCurve::LinearPointTangentIterator* it = new BezierCurve::LinearPointTangentIterator(this, elements, elements/2, 0, 1);
+		// the log is used for the subelement count because otherwise iterating through it becomes very very inefficent.
+		BezierCurve::LinearPointTangentIterator* it = new BezierCurve::LinearPointTangentIterator(this, elements, log(elements)*5, 0, 1);
 		return *it;
 	}
 

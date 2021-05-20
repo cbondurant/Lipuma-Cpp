@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <tuple>
 #include <memory>
+#include <QPainterPath>
 
 namespace Lipuma
 {
