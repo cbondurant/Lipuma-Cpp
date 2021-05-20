@@ -17,7 +17,9 @@ namespace Lipuma
 	class BezierCurve
 	{
 	public:
+
 		// A curve iterator that iterates over n points and returns b(n) at each value
+		// Ill be honest this entire strategy has kinda turned out to be a square-peg round hole situation...
 		struct PointTangentIterator
 		{
 			using iterator_category = std::input_iterator_tag;
@@ -31,7 +33,7 @@ namespace Lipuma
 			friend bool operator==(const PointTangentIterator &a, const PointTangentIterator &b);
 			friend bool operator!=(const PointTangentIterator &a, const PointTangentIterator &b);
 			virtual PointTangent operator*() const;
-			virtual const std::unique_ptr<PointTangent> operator->() const;
+			const std::unique_ptr<PointTangent> operator->() const;
 			const BezierCurve* getCurve() const;
 
 		private:
@@ -47,10 +49,8 @@ namespace Lipuma
 			StandardPointTangentIterator(const BezierCurve *curve, int segments, qreal start, qreal end);
 			PointTangentIterator &operator++() override;
 			PointTangent operator*() const override;
-			const std::unique_ptr<PointTangent> operator->() const override;
 
 		private:
-			qreal offset() const;
 			int segments;
 			int currentSegment;
 			qreal start;
@@ -66,15 +66,12 @@ namespace Lipuma
 			LinearPointTangentIterator(const BezierCurve *curve, int segments, int subSegments, qreal start, qreal end);
 			PointTangentIterator &operator++() override;
 			PointTangent operator*() const override;
-			const std::unique_ptr<PointTangent> operator->() const override;
 
 		private:
 			int segments;
 			int currentSegment;
 			int subSegments;
-			int currentSubsegment;
-			qreal curLen;
-			QPointF prevPoint;
+			QPainterPath path;
 			qreal start;
 			qreal end;
 		};
@@ -84,11 +81,11 @@ namespace Lipuma
 
 		QPointF getPoint(const qreal) const;
 		PointTangent getPointTangent(const qreal) const;
-		PointTangentIterator sweepCurveIterator(const int) const;
+		StandardPointTangentIterator& sweepCurveIterator(const int) const;
 
-		PointTangentIterator end() const;
+		PointTangentIterator& end() const;
 
-		LinearPointTangentIterator LinearSweepCurveIterator(const int) const;
+		LinearPointTangentIterator& sweepLinearCurveIterator(const int) const;
 
 		void setPtA(QPointF);
 		void setPtB(QPointF);

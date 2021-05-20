@@ -212,7 +212,7 @@ namespace Lipuma {
 		QPainterPath path;
 
 		std::vector<float>::iterator ci = curveNoise.begin();
-		for (BezierCurve::PointTangentIterator i = curve.sweepCurveIterator(POINTS); i != curve.end(); ++i)
+		for (BezierCurve::PointTangentIterator& i = curve.sweepLinearCurveIterator(POINTS); i != curve.end(); ++i)
 		{
 			QPointF point = i->point;
 			QPointF perp = i->tangent.transposed();
