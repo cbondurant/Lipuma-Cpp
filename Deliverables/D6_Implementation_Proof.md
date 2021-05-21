@@ -8,10 +8,4 @@ This video shows the implementation of
 - Saving a lipuma file
 - Loading a lipuma file
 
-<object width="425" height="350">
-  <param name="movie" value="https://www.youtube.com/watch?v=spy5z4A-3AU" />
-  <param name="wmode" value="transparent" />
-  <embed src="https://www.youtube.com/watch?v=spy5z4A-3AU"
-         type="application/x-shockwave-flash"
-         wmode="transparent" width="425" height="350" />
-</object>
+[![Lipuma Demo](https://img.youtube.com/vi/spy5z4A-3AU/0.jpg)](https://www.youtube.com/watch?v=spy5z4A-3AU "Lipuma Demo")
