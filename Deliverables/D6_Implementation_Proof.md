@@ -8,4 +8,4 @@ This video shows the implementation of
 - Saving a lipuma file
 - Loading a lipuma file
 
-![Implementation Video](./img/lipuma_demo.mkv)
+![Implementation Video](https://youtu.be/spy5z4A-3AU)
