@@ -13,57 +13,45 @@ namespace Lipuma
 
 	BezierCurve::PointTangentIterator::PointTangentIterator (const BezierCurve *curve) : _curve(curve){}
 
-	BezierCurve::PointTangentIterator::~PointTangentIterator(){}
-
-	BezierCurve::PointTangentIterator &BezierCurve::PointTangentIterator::operator++(){
-		return *this;
-	}
-	BezierCurve::PointTangentIterator BezierCurve::PointTangentIterator::operator++(int)
-	{
-		BezierCurve::PointTangentIterator retval = *this;
-		++(*this);
-		return retval;
-	}
-	PointTangent BezierCurve::PointTangentIterator::operator*() const {
-		assert(false); // This should never be called directly
-		return PointTangent();
-	}
-	const std::unique_ptr<PointTangent> BezierCurve::PointTangentIterator::operator->() const {
-		// For some reason the return of -> has to be dereferenceable, so cast it to a unique_ptr so it cleans itself up afterwards, no leaks.
-		std::unique_ptr<PointTangent> ret(new PointTangent(**this));
+	PointTangent BezierCurve::PointTangentIterator::getPointTangentAdvance(){
+		PointTangent ret = getPointTangent();
+		advance();
 		return ret;
 	}
 
-	// Comparison between point tangent types
-	bool operator==(const BezierCurve::PointTangentIterator &a, const BezierCurve::PointTangentIterator &b)
-	{
-		return ((a->point == b->point) & (a.getCurve() == b.getCurve()));
+	bool BezierCurve::PointTangentIterator::isEmpty() const{ // Base type will never return a valid response
+		return true;
 	}
 
-	bool operator!=(const BezierCurve::PointTangentIterator &a, const BezierCurve::PointTangentIterator &b)
-	{
-		return !(a == b);
+	void BezierCurve::PointTangentIterator::advance(){
+
+	}
+
+	PointTangent BezierCurve::PointTangentIterator::getPointTangent() const {
+		assert(false); // This should never be called directly
+		return PointTangent();
 	}
 
 	// Base PtTangent Types
-
 	// Standard non-equidistant point tangent iterator definition begins here
 
 	BezierCurve::StandardPointTangentIterator::StandardPointTangentIterator(const BezierCurve *curve, int segments, qreal start, qreal end) : PointTangentIterator(curve), segments(segments), start(start), end(end), currentSegment(0){}
 
-	BezierCurve::PointTangentIterator &BezierCurve::StandardPointTangentIterator::operator++()
+	void BezierCurve::StandardPointTangentIterator::advance()
 	{
 		currentSegment += 1;
-		return *this;
 	}
 
+	bool BezierCurve::StandardPointTangentIterator::isEmpty() const{
+		return segments == 0 | currentSegment >= segments;
+	}
 
-	PointTangent BezierCurve::StandardPointTangentIterator::operator*() const
+	PointTangent BezierCurve::StandardPointTangentIterator::getPointTangent() const
 	{
-		if (segments == 0 | currentSegment >= segments){
+		if (isEmpty()){
 			return PointTangent{QPointF(DBL_MAX, DBL_MAX), QPointF(DBL_MAX, DBL_MAX)};
 		}
-		const qreal x = static_cast<float>(currentSegment) / static_cast<float>(segments);
+		const qreal x = static_cast<float>(currentSegment) / static_cast<float>(segments-1);
 		return getCurve()->getPointTangent(x);
 	}
 
@@ -71,26 +59,36 @@ namespace Lipuma
 
 	BezierCurve::LinearPointTangentIterator::LinearPointTangentIterator(const BezierCurve *curve, int segments, int subSegments, qreal start, qreal end) :
 	PointTangentIterator(curve), segments(segments), subSegments(subSegments),
-	start(start), end(end){
-		currentSegment=0;
+	start(start), end(end), pathSegment(0){
 		path = QPainterPath();
-		for (BezierCurve::PointTangentIterator& i = curve->sweepCurveIterator(subSegments); i != curve->end(); ++i)
+		for (auto i = curve->sweepCurveIterator(subSegments); !i->isEmpty(); i->advance())
 		{
-			path.lineTo(i->point);
+			path.lineTo(i->getPointTangent().point);
 		}
+		pathLength = path.length();
 	}
 
-	BezierCurve::PointTangentIterator& BezierCurve::LinearPointTangentIterator::operator++(){
-		currentSegment += 1;
-		return *this;
+	bool BezierCurve::LinearPointTangentIterator::isEmpty() const{
+		return segments == 0 | pathSegment >= path.elementCount();
 	}
 
-	PointTangent BezierCurve::LinearPointTangentIterator::operator*() const{
-		if (segments == 0 | currentSegment >= segments){
+	void BezierCurve::LinearPointTangentIterator::advance(){
+		qreal step = pathLength/static_cast<float>(segments);
+		qreal distToNextElement = distance(currLoc - path.elementAt(pathSegment));
+		while (step >= distToNextElement){
+			currLoc = path.elementAt(pathSegment);
+			step -= distToNextElement;
+			pathSegment += 1;
+			distToNextElement = distance(currLoc - path.elementAt(pathSegment));
+		}
+		currLoc += normalize(path.elementAt(pathSegment) - currLoc)*step;
+	}
+
+	PointTangent BezierCurve::LinearPointTangentIterator::getPointTangent() const{
+		if (isEmpty()){
 			return PointTangent{QPointF(DBL_MAX, DBL_MAX), QPointF(DBL_MAX, DBL_MAX)};
 		}
-		const qreal x = static_cast<float>(currentSegment) / static_cast<float>(segments);
-		return PointTangent{path.pointAtPercent(x), QPointF(1,path.slopeAtPercent(x))};
+		return PointTangent{currLoc, currLoc - path.elementAt(pathSegment)};
 	}
 
 	QPointF BezierCurve::getPoint(const qreal x) const
@@ -109,23 +107,20 @@ namespace Lipuma
 		return PointTangent{Lipuma::lerp(abbc, bccd, x), abbc - bccd};
 	}
 
-	BezierCurve::StandardPointTangentIterator& BezierCurve::sweepCurveIterator(const int elements) const
+	std::unique_ptr<BezierCurve::PointTangentIterator> BezierCurve::sweepCurveIterator(const int elements) const
 	{
-		BezierCurve::StandardPointTangentIterator* it = new BezierCurve::StandardPointTangentIterator(this, elements, 0, 1);
-		return *it;
+		return std::unique_ptr<BezierCurve::StandardPointTangentIterator>(new BezierCurve::StandardPointTangentIterator(this, elements, 0, 1));
 	}
 
-	BezierCurve::LinearPointTangentIterator& BezierCurve::sweepLinearCurveIterator(const int elements) const
+	std::unique_ptr<BezierCurve::PointTangentIterator> BezierCurve::sweepLinearCurveIterator(const int elements) const
 	{
-		// the log is used for the subelement count because otherwise iterating through it becomes very very inefficent.
-		BezierCurve::LinearPointTangentIterator* it = new BezierCurve::LinearPointTangentIterator(this, elements, log(elements)*5, 0, 1);
-		return *it;
+		return std::unique_ptr<BezierCurve::LinearPointTangentIterator>(new BezierCurve::LinearPointTangentIterator(this, elements, elements, 0, 1));
 	}
 
 	BezierCurve::BezierCurve(QPointF a, QPointF b, QPointF c, QPointF d) : ptA(a), ptB(b), ptC(c), ptD(d) {}
 	BezierCurve::BezierCurve(){}
 
-	BezierCurve::PointTangentIterator& BezierCurve::end() const
+	std::unique_ptr<BezierCurve::PointTangentIterator> BezierCurve::end() const
 	{
 		return sweepCurveIterator(0);
 	}
@@ -134,10 +129,10 @@ namespace Lipuma
 	{
 		QPointF prev = ptA;
 		qreal len = 0;
-		for (BezierCurve::PointTangentIterator &i = sweepCurveIterator(100); i != end(); ++i)
+		for (auto i = sweepCurveIterator(100); !i->isEmpty(); i->advance())
 		{
-			len += distance(prev - i->point);
-			prev = i->point;
+			len += distance(prev - i->getPointTangent().point);
+			prev = i->getPointTangent().point;
 		}
 		return len;
 	}

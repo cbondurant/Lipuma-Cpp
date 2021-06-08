@@ -1,3 +1,4 @@
+//#define CATCH_CONFIG_ENABLE_BENCHMARKING // uncomment if you want to bench the curves, otherwise leave off for faster tests
 #include <catch2/catch.hpp>
 
 #include <QPointF>
@@ -6,7 +7,6 @@
 
 #include "math/points.hpp"
 #include "math/bezier.hpp"
-
 
 TEST_CASE("Consistent Linear interpolation", "[math]"){
 
@@ -68,26 +68,44 @@ TEST_CASE("Bezier Curve implementation", "[math]"){
 	int x = GENERATE(2,3,4,5,10,20,50,100);
 	SECTION("Generating a Beizer curve iterator with N returns N points", "[math]"){
 		std::vector<QPointF> v;
-		for (auto i = curve.sweepCurveIterator(x); i != curve.end(); ++i){
-			v.emplace(v.end(), i->point);
+		for (auto i = curve.sweepCurveIterator(x); !i->isEmpty(); i->advance()){
+			v.emplace(v.end(), i->getPointTangent().point);
 		}
 		REQUIRE(v.size() == x);
 		v.clear();
-		for (auto i = curve.sweepLinearCurveIterator(x); i != curve.end(); ++i){
-			v.emplace(v.end(), i->point);
+		for (auto i = curve.sweepLinearCurveIterator(x); !i->isEmpty(); i->advance()){
+			v.emplace(v.end(), i->getPointTangent().point);
 		}
 		REQUIRE(v.size() == x);
 	}
 
 	SECTION("The first point of an iterator should be equal to the start point","[math]"){
-		Lipuma::BezierCurve::PointTangentIterator &i = curve.sweepCurveIterator(x);
-		REQUIRE(i->point==start);
+		auto i = curve.sweepCurveIterator(x);
+		REQUIRE(i->getPointTangent().point==start);
 		i = curve.sweepLinearCurveIterator(x);
-		REQUIRE(i->point==start);
+		REQUIRE(i->getPointTangent().point==start);
 	}
 
 	SECTION("Point (0) should be equal to start and Point(1) equal to end"){
 		REQUIRE(curve.getPoint(0) == start);
 		REQUIRE(curve.getPoint(1) == end);
 	}
+
+	SECTION("Beginning and end of iterators should be equal to the start and end of curve", "[math]"){
+		auto i = curve.sweepCurveIterator(x);
+		REQUIRE(i->getPointTangent().point == start);
+		Lipuma::PointTangent prevPt;
+		while (!i->isEmpty()){
+			prevPt = i->getPointTangentAdvance();
+		}
+		REQUIRE(prevPt.point == end);
+
+		auto j = curve.sweepLinearCurveIterator(x);
+		REQUIRE(j->getPointTangent().point == start);
+		while (!j->isEmpty()){
+			prevPt = j->getPointTangentAdvance();
+		}
+		REQUIRE(prevPt.point == end);
+	}
+
 }

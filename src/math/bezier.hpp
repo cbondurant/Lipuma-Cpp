@@ -19,22 +19,15 @@ namespace Lipuma
 	{
 	public:
 
-		// A curve iterator that iterates over n points and returns b(n) at each value
-		// Ill be honest this entire strategy has kinda turned out to be a square-peg round hole situation...
+		// The base class for the point tangent iterator
 		struct PointTangentIterator
 		{
-			using iterator_category = std::input_iterator_tag;
-			using value_type = PointTangent;
-
 		public:
 			PointTangentIterator(const BezierCurve* curve);
-			virtual ~PointTangentIterator();
-			virtual PointTangentIterator &operator++();
-			PointTangentIterator operator++(int);
-			friend bool operator==(const PointTangentIterator &a, const PointTangentIterator &b);
-			friend bool operator!=(const PointTangentIterator &a, const PointTangentIterator &b);
-			virtual PointTangent operator*() const;
-			const std::unique_ptr<PointTangent> operator->() const;
+			virtual void advance(); // Increment iterator
+			virtual bool isEmpty() const; // returns true when at end of defined iteraton
+			virtual PointTangent getPointTangent() const; // Returns current point tangent value, or ((0,0),(0,0)) if isEmpty is true.
+			PointTangent getPointTangentAdvance(); // Implicitly calls getPointTangent() followed by advance()
 			const BezierCurve* getCurve() const;
 
 		private:
@@ -43,13 +36,11 @@ namespace Lipuma
 
 		struct StandardPointTangentIterator : public PointTangentIterator
 		{
-			using iterator_category = std::input_iterator_tag;
-			using value_type = PointTangent;
-
 		public:
 			StandardPointTangentIterator(const BezierCurve *curve, int segments, qreal start, qreal end);
-			PointTangentIterator &operator++() override;
-			PointTangent operator*() const override;
+			void advance() override;
+			PointTangent getPointTangent() const override;
+			bool isEmpty() const override;
 
 		private:
 			int segments;
@@ -60,19 +51,20 @@ namespace Lipuma
 
 		struct LinearPointTangentIterator : public PointTangentIterator
 		{
-			using iterator_category = std::input_iterator_tag;
-			using value_type = PointTangent;
-
 		public:
 			LinearPointTangentIterator(const BezierCurve *curve, int segments, int subSegments, qreal start, qreal end);
-			PointTangentIterator &operator++() override;
-			PointTangent operator*() const override;
+			void advance() override;
+			PointTangent getPointTangent() const override;
+			bool isEmpty() const override;
 
 		private:
 			int segments;
-			int currentSegment;
 			int subSegments;
 			QPainterPath path;
+			qreal pathLength;
+			int pathSegment;
+			qreal pathSegmentDist;
+			QPointF currLoc;
 			qreal start;
 			qreal end;
 		};
@@ -82,11 +74,11 @@ namespace Lipuma
 
 		QPointF getPoint(const qreal) const;
 		PointTangent getPointTangent(const qreal) const;
-		StandardPointTangentIterator& sweepCurveIterator(const int) const;
+		std::unique_ptr<PointTangentIterator> sweepCurveIterator(const int) const;
 
-		PointTangentIterator& end() const;
+		std::unique_ptr<PointTangentIterator> end() const;
 
-		LinearPointTangentIterator& sweepLinearCurveIterator(const int) const;
+		std::unique_ptr<PointTangentIterator> sweepLinearCurveIterator(const int) const;
 
 		void setPtA(QPointF);
 		void setPtB(QPointF);

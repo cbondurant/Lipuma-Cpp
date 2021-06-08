@@ -117,9 +117,9 @@ namespace Lipuma {
 		s.setWidth(HEIGHT);
 
 		// First and last point need to always be at zero, so skip the 0th element and the final element
-		for (auto i = curve.sweepCurveIterator(POINTS); i != curve.end(); ++i)
+		for (auto i = curve.sweepCurveIterator(POINTS); !i->isEmpty(); i->advance())
 		{
-			path.lineTo(i->point);
+			path.lineTo(i->getPointTangent().point);
 		}
 		return s.createStroke(path);
 	}
@@ -212,10 +212,10 @@ namespace Lipuma {
 		QPainterPath path;
 
 		std::vector<float>::iterator ci = curveNoise.begin();
-		for (BezierCurve::PointTangentIterator& i = curve.sweepLinearCurveIterator(POINTS); i != curve.end(); ++i)
+		for (auto i = curve.sweepLinearCurveIterator(POINTS); !i->isEmpty(); i->advance())
 		{
-			QPointF point = i->point;
-			QPointF perp = i->tangent.transposed();
+			QPointF point = i->getPointTangent().point;
+			QPointF perp = i->getPointTangent().tangent.transposed();
 			perp.setY(-perp.y());
 			point += Lipuma::normalize(perp) * ((*ci++) * HEIGHT);
 			path.lineTo(point);
