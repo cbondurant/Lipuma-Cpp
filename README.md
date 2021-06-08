@@ -10,6 +10,22 @@ These basic beginnings are already a wonderful speedup to the map making process
 
 ![An example of a lipuma map modified further by editing in another art tool](./.img/Lipuma_edited_demo.png)
 
+# Existing features
+
+Saving and loading of project files.
+
+Line drawing and configurable levels of line complexity.
+
+both straight line segments and bezier curve lines.
+
+# Planned features
+
+Configurable line color, weight, and other drawing styles (dotted, transparent, etc.)
+
+Exporting directly to PNG, JPEG, SVG, and other common image formats.
+
+Stamp tool for repeated artistic elements.
+
 # Building
 
 Build instructions TBD
