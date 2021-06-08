@@ -103,7 +103,8 @@ TEST_CASE("Bezier Curve implementation", "[math]"){
 		auto j = curve.sweepLinearCurveIterator(x);
 		REQUIRE(j->getPointTangent().point == start);
 		while (!j->isEmpty()){
-			prevPt = j->getPointTangentAdvance();
+			prevPt = j->getPointTangent();
+			j->advance();
 		}
 		REQUIRE(prevPt.point == end);
 	}

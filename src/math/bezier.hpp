@@ -59,6 +59,7 @@ namespace Lipuma
 
 		private:
 			int segments;
+			int currentSegment;
 			int subSegments;
 			QPainterPath path;
 			qreal pathLength;

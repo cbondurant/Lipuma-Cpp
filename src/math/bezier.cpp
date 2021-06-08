@@ -59,21 +59,26 @@ namespace Lipuma
 
 	BezierCurve::LinearPointTangentIterator::LinearPointTangentIterator(const BezierCurve *curve, int segments, int subSegments, qreal start, qreal end) :
 	PointTangentIterator(curve), segments(segments), subSegments(subSegments),
-	start(start), end(end), pathSegment(0){
+	start(start), end(end), pathSegment(0), currentSegment(0){
 		path = QPainterPath();
 		for (auto i = curve->sweepCurveIterator(subSegments); !i->isEmpty(); i->advance())
 		{
 			path.lineTo(i->getPointTangent().point);
 		}
-		pathLength = path.length();
+		pathLength = path.length(); // cache because this is expensive to calculate.
 	}
 
 	bool BezierCurve::LinearPointTangentIterator::isEmpty() const{
-		return segments == 0 | pathSegment >= path.elementCount();
+		return segments == 0 | pathSegment >= path.elementCount() | currentSegment == segments;
 	}
 
 	void BezierCurve::LinearPointTangentIterator::advance(){
 		qreal step = pathLength/static_cast<float>(segments);
+		currentSegment += 1;
+		if (isEmpty()){
+			currLoc = path.elementAt(path.elementCount());
+			return;
+		}
 		qreal distToNextElement = distance(currLoc - path.elementAt(pathSegment));
 		while (step >= distToNextElement){
 			currLoc = path.elementAt(pathSegment);
