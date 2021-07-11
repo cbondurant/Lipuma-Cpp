@@ -74,7 +74,7 @@ namespace Lipuma
 	}
 
 	QRectF FractalLine::boundingRect() const {
-		return QRectF(start.x()-5,-HEIGHT,end.x()+10,HEIGHT*2);
+		return QRectF(start.x(),-HEIGHT,end.x(),HEIGHT*2);
 	}
 
 	void FractalLine::setStart(QPointF s)
