@@ -22,16 +22,15 @@ int main (int argc, char **argv){
 	QAction* saveAction = fileMenu->addAction("&Save As");
 	QObject::connect(saveAction, &QAction::triggered, fileMenu,  [canvas, mainWin](){
 		QString s = QFileDialog::getSaveFileName(mainWin, "Open Image", "$HOME/Documents/", "Lipuma Files (*.lpm)");
-		Lipuma::SerializeCanvas(canvas,s);
+		Lipuma::SerializeScene(canvas->scene(),s);
 	});
 
 	QAction* loadAction = fileMenu->addAction("&Open Canvas");
 	QObject::connect(loadAction, &QAction::triggered, mainWin,  [mainWin](){
 		QString s = QFileDialog::getOpenFileName(mainWin, "Open Image", "$HOME/Documents/", "Lipuma Files (*.lpm)");
-		Lipuma::Canvas* newcan = Lipuma::LoadCanvas(s);
-		if (newcan){
-			mainWin->setCentralWidget(newcan);
-		}
+		QGraphicsScene* scene = Lipuma::LoadScene(s);
+		dynamic_cast<Lipuma::Canvas*>(mainWin->centralWidget())->scene()->clear();
+		dynamic_cast<Lipuma::Canvas*>(mainWin->centralWidget())->setScene(scene);
 	});
 
 	QDockWidget *dock = new QDockWidget();

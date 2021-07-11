@@ -10,14 +10,14 @@
 const quint32 MAGIC = 0x4c504d41; // hex LPMA
 
 namespace Lipuma{
-	void SerializeCanvas(Canvas* canvas, QString& filename){
+	void SerializeScene(QGraphicsScene* scene, QString& filename){
 		QFile file(filename);
 		if (!file.open(QIODevice::WriteOnly)){
 			qWarning("File failed!");
 		}else{
 			QDataStream stream(&file);
 			stream << MAGIC;
-			for (auto i : canvas->scene()->items()){
+			for (auto i : scene->items()){
 				if (i->type() == Drawable::Type){
 					dynamic_cast<Drawable*>(i)->write(stream);
 				}
@@ -26,9 +26,9 @@ namespace Lipuma{
 		}
 	}
 
-	Canvas* LoadCanvas(QString& filename){
+	QGraphicsScene* LoadScene(QString& filename){
 		QFile file(filename);
-		Canvas* canvas = new Canvas(new QGraphicsScene());
+		QGraphicsScene* scene = new QGraphicsScene();
 		if (!file.open(QIODevice::ReadOnly)){
 			qWarning("File failed!");
 		}else{
@@ -41,14 +41,14 @@ namespace Lipuma{
 				stream >> type;
 				switch(type){
 					case (DrawableSerializeTypes::SerializeFractalCurve):
-						canvas->scene()->addItem(new FractalCurve(stream));
+						scene->addItem(new FractalCurve(stream));
 						break;
 					case (DrawableSerializeTypes::SerializeFractalLine):
-						canvas->scene()->addItem(new FractalLine(stream));
+						scene->addItem(new FractalLine(stream));
 						break;
 				}
 			}
 		}
-		return canvas;
+		return scene;
 	}
 }

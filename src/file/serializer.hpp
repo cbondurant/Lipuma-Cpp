@@ -2,11 +2,11 @@
 #define FILE_SERIALIZER_HPP
 
 #include <QString>
-#include "widget/canvas.hpp"
+#include <QGraphicsScene>
 
 namespace Lipuma {
-	void SerializeCanvas(Canvas*, QString&);
-	Canvas* LoadCanvas(QString&);
+	void SerializeScene(QGraphicsScene*, QString&);
+	QGraphicsScene* LoadScene(QString&);
 }
 
 #endif

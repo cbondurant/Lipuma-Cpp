@@ -28,17 +28,6 @@ namespace Lipuma {
 		_currentTool = ToolManager::getFractalTool();
 		setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 		setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-
-
-		// DEBUG: Graphics to mark the center of the scene
-		/*
-		scene()->addLine(-1,-1,1,1);
-		scene()->addLine(-1,1,1,-1);
-		scene()->addItem(new FractalLine(QPoint(110,100), QPointF(110,-100)));
-		scene()->addItem(new FractalLine(QPoint(100,-110), QPointF(-100,-110)));
-		scene()->addItem(new FractalLine(QPoint(-110,-100), QPointF(-110,100)));
-		scene()->addItem(new FractalLine(QPoint(-100,110), QPointF(100,110)));
-		*/
 		setSceneRect(-1000, -1000, 2000, 2000);
 	}
 
