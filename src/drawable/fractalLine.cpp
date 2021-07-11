@@ -90,7 +90,6 @@ namespace Lipuma
 		QPointF delta = e - pos();
 		qreal distance = Lipuma::distance(delta);
 		qreal theta = atan2l(delta.y(), delta.x());
-		// TODO: I do not know if M_PIl is a reliable constant, as it is compiler defined
 		setRotation((theta / M_PIl) * 180.0L);
 		end = QPointF(distance, 0);
 		prepareGeometryChange();

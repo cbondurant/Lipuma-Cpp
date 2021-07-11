@@ -4,6 +4,7 @@
 #include <QPointF>
 #include <cmath>
 #include <algorithm>
+#include <math/constants.hpp>
 
 namespace Lipuma{
 	/*
