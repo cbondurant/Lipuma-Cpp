@@ -20,13 +20,6 @@
 
 namespace Lipuma {
 
-	inline QPointF computeBeizer(const QPointF a, const QPointF b, const QPointF c, const QPointF d, qreal x){
-			const QPointF bc = Lipuma::lerp(b, c, x);
-			const QPointF abbc = Lipuma::lerp(Lipuma::lerp(a, b, x),bc,x);
-			const QPointF bccd = Lipuma::lerp(bc,Lipuma::lerp(c, d, x),x);
-			return Lipuma::lerp(abbc, bccd, x);
-	}
-
 	std::default_random_engine FractalCurve::rand;
 
 	void FractalCurve::initalizeNoise(){
@@ -66,7 +59,6 @@ namespace Lipuma {
 	}
 
 	FractalCurve::FractalCurve(QPointF s, QPointF e){
-		seed = FractalCurve::rand();
 		setFlag(QGraphicsItem::ItemIsSelectable);
 		initalizeEditPoints();
 		initalizeNoise();
@@ -79,14 +71,18 @@ namespace Lipuma {
 		initalizeEditPoints();
 		initalizeNoise();
 		is >> seed;
-		QPointF a,b,c,d;
-		is >> a >> b >> c >> d;
-		curve = BezierCurve(a,b,c,d);
-		setStart(a);
-		setEnd(b);
-		setInnerStart(b);
-		setInnerEnd(d);
-		is >> frequency;
+		QPointF start,end,midstart,midend;
+		is >> start;
+		is >> end;
+		is >> midstart;
+		is >> midend;
+		setStart(start);
+		setEnd(end);
+		setInnerStart(midstart);
+		setInnerEnd(midend);
+		float f;
+		is >> f;
+		setFrequency(f);
 	}
 
 	qint8 FractalCurve::DrawableType(){
@@ -95,7 +91,7 @@ namespace Lipuma {
 
 	void FractalCurve::write(QDataStream& os){
 		os << DrawableType();
-		os << (qint32)seed;
+		os << seed;
 
 		os << mapToScene(start);
 		os << mapToScene(end);
