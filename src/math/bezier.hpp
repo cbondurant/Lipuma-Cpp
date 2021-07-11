@@ -25,7 +25,9 @@ namespace Lipuma
 		public:
 			PointTangentIterator(const BezierCurve* curve);
 			virtual void advance(); // Increment iterator
-			virtual bool isEmpty() const; // returns true when at end of defined iteraton
+			// returns true when at end of defined iteraton
+			// Also returns true when the requested number of points is less than 2.
+			virtual bool isEmpty() const;
 			virtual PointTangent getPointTangent() const; // Returns current point tangent value, or ((0,0),(0,0)) if isEmpty is true.
 			PointTangent getPointTangentAdvance(); // Implicitly calls getPointTangent() followed by advance()
 			const BezierCurve* getCurve() const;
