@@ -43,7 +43,7 @@ namespace Lipuma
 	}
 
 	bool BezierCurve::StandardPointTangentIterator::isEmpty() const{
-		return segments == 0 | currentSegment >= segments;
+		return segments <= 1 | currentSegment >= segments;
 	}
 
 	PointTangent BezierCurve::StandardPointTangentIterator::getPointTangent() const
