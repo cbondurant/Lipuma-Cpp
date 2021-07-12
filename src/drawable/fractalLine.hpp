@@ -28,7 +28,7 @@ namespace Lipuma
 		static qint8 DrawableType();
 		void initalizeNoise();
 		void initalizeEditPoints();
-		void write(QDataStream&);
+		void write(QDataStream&) override;
 		QRectF boundingRect() const override;
 		void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override;
 
