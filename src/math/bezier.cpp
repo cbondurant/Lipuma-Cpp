@@ -43,7 +43,7 @@ namespace Lipuma
 	}
 
 	bool BezierCurve::StandardPointTangentIterator::isEmpty() const{
-		return segments <= 1 | currentSegment >= segments;
+		return (segments <= 1) | (currentSegment >= segments);
 	}
 
 	PointTangent BezierCurve::StandardPointTangentIterator::getPointTangent() const
@@ -69,7 +69,7 @@ namespace Lipuma
 	}
 
 	bool BezierCurve::LinearPointTangentIterator::isEmpty() const{
-		return segments <= 1 | pathSegment > path.elementCount() | currentSegment == segments;
+		return (segments <= 1) | (pathSegment > path.elementCount()) | (currentSegment == segments);
 	}
 
 	void BezierCurve::LinearPointTangentIterator::advance(){
@@ -93,8 +93,8 @@ namespace Lipuma
 		if (isEmpty()){
 			return PointTangent{QPointF(DBL_MAX, DBL_MAX), QPointF(DBL_MAX, DBL_MAX)};
 		}
-		if (path.elementCount() < pathSegment){
-			return PointTangent{currLoc, currLoc - path.elementAt(path.elementCount())};
+		if (path.elementCount() <= pathSegment){
+			return PointTangent{currLoc, path.elementAt(path.elementCount()-1)-currLoc};
 		}
 		return PointTangent{currLoc, currLoc - path.elementAt(pathSegment)};
 	}
