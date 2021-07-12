@@ -197,7 +197,7 @@ namespace Lipuma {
 		qreal length = curve.length();
 
 		// Figure out the number of points to render the line with
-		const int POINTS = length / PERIOD;
+		const int POINTS = std::max(static_cast<int>(length / PERIOD), 2);
 		// Dont draw really really short lines
 		if (length < 1)
 			return;
@@ -213,11 +213,12 @@ namespace Lipuma {
 			QPointF point = i->getPointTangent().point;
 			QPointF perp = i->getPointTangent().tangent.transposed();
 			perp.setY(-perp.y());
+			//path.moveTo(point);
 			point += Lipuma::normalize(perp) * ((*ci++) * HEIGHT);
 			path.lineTo(point);
 		}
 		// Draw final point
-		path.lineTo(end);
+		path.setElementPositionAt(path.elementCount()-1, end.x(), end.y());
 		painter->drawPath(path);
 		//painter->drawPath(shape());
 		//painter->drawRect(boundingRect());

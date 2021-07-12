@@ -93,10 +93,10 @@ namespace Lipuma
 		if (isEmpty()){
 			return PointTangent{QPointF(DBL_MAX, DBL_MAX), QPointF(DBL_MAX, DBL_MAX)};
 		}
-		if (path.elementCount() <= pathSegment){
-			return PointTangent{currLoc, path.elementAt(path.elementCount()-1)-currLoc};
+		if (path.elementCount()/2 <= pathSegment){ // I chose the midpoint just to have a crossing point, the specifics dont really matter.
+			return PointTangent{currLoc,-1*(path.elementAt(pathSegment)- path.elementAt(pathSegment-1))};
 		}
-		return PointTangent{currLoc, currLoc - path.elementAt(pathSegment)};
+		return PointTangent{currLoc, path.elementAt(pathSegment) - path.elementAt(pathSegment+1)};
 	}
 
 	QPointF BezierCurve::getPoint(const qreal x) const
