@@ -12,6 +12,7 @@ namespace Lipuma
 	}
 
 	BezierCurve::PointTangentIterator::PointTangentIterator (const BezierCurve *curve) : _curve(curve){}
+	BezierCurve::PointTangentIterator::~PointTangentIterator (){}
 
 	PointTangent BezierCurve::PointTangentIterator::getPointTangentAdvance(){
 		PointTangent ret = getPointTangent();

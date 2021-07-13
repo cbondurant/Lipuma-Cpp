@@ -24,6 +24,7 @@ namespace Lipuma
 		{
 		public:
 			PointTangentIterator(const BezierCurve* curve);
+			virtual ~PointTangentIterator();
 			virtual void advance(); // Increment iterator
 			// returns true when at end of defined iteraton
 			// Also returns true when the requested number of points is less than 2.
