@@ -61,6 +61,7 @@ namespace Lipuma
 		friend std::ostream& operator<<(std::ostream& os, const FractalCurve& dt);
 
 	private:
+		QPainterPath generatePath() const;
 		FastNoise::SmartNode<FastNoise::Fractal<>> noise;
 		static const int SEGMENTS = 100;
 		static const int PERIOD = 2;

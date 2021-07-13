@@ -77,6 +77,10 @@ namespace Lipuma
 		return QRectF(start.x(),-HEIGHT,end.x(),HEIGHT*2);
 	}
 
+	QPainterPath FractalLine::shape() const {
+		return generatePath();
+	}
+
 	void FractalLine::setStart(QPointF s)
 	{
 		// Store end location to keep end in place.
@@ -119,6 +123,23 @@ namespace Lipuma
 		update();
 	}
 
+	QPainterPath FractalLine::generatePath() const {
+		QPainterPath path;
+		// Figure out the number of points to render the line with
+		const int POINTS = end.x() / PERIOD;
+		std::vector<float> curve = std::vector<float>(((POINTS + 8) / 8) * 8); // Round to nearest multiple of 8, fastnoise runs better with it
+		noise->GenUniformGrid2D(curve.data(), 0, 0, ((POINTS + 8) / 8) * 8, 1, frequency, seed);
+
+		// First and last point need to always be at zero, so skip the 0th element and the final element
+		for (int i = 1; i < POINTS; i++)
+		{
+			QPointF point = Lipuma::lerp(start, QPointF(POINTS * PERIOD, 0), static_cast<float>(i) / static_cast<float>(POINTS));
+			point += QPointF(0, curve[i - 1] * HEIGHT);
+			path.lineTo(point);
+		}
+		return path;
+	}
+
 	void FractalLine::paint(QPainter *painter, const QStyleOptionGraphicsItem * /* option */, QWidget * /* widget */)
 	{
 		painter->setRenderHint(QPainter::Antialiasing, true);
@@ -132,20 +153,7 @@ namespace Lipuma
 		if (end.x() < 0.1)
 			return;
 
-		// Figure out the number of points to render the line with
-		const int POINTS = end.x() / PERIOD;
-		std::vector<float> curve = std::vector<float>(((POINTS + 8) / 8) * 8); // Round to nearest multiple of 8, fastnoise runs better with it
-		noise->GenUniformGrid2D(curve.data(), 0, 0, ((POINTS + 8) / 8) * 8, 1, frequency, seed);
-
-		// Generate path
-		QPainterPath path;
-		// First and last point need to always be at zero, so skip the 0th element and the final element
-		for (int i = 1; i < POINTS; i++)
-		{
-			QPointF point = Lipuma::lerp(start, QPointF(POINTS * PERIOD, 0), static_cast<float>(i) / static_cast<float>(POINTS));
-			point += QPointF(0, curve[i - 1] * HEIGHT);
-			path.lineTo(point);
-		}
+		QPainterPath path = generatePath();
 		// Draw final point
 		path.lineTo(end);
 		painter->drawPath(path);

@@ -30,6 +30,7 @@ namespace Lipuma
 		void initalizeEditPoints();
 		void write(QDataStream&) override;
 		QRectF boundingRect() const override;
+		QPainterPath shape() const override;
 		void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 		QVariant itemChange(GraphicsItemChange, const QVariant &val) override;
@@ -50,6 +51,7 @@ namespace Lipuma
 		void setFrequency(float);
 
 	private:
+		QPainterPath generatePath() const;
 		FastNoise::SmartNode<FastNoise::Fractal<>> noise;
 		static const int SEGMENTS = 100;
 		static const int PERIOD = 2;

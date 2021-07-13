@@ -102,27 +102,41 @@ namespace Lipuma {
 	}
 	QPainterPath FractalCurve::shape() const
 	{
-		qreal length = curve.length();
-
-		// Figure out the number of points to render the line with
-		const int POINTS = length / PERIOD;
-
-		// Generate path
-		QPainterPath path;
-		QPainterPathStroker s;
-		s.setWidth(HEIGHT);
-
-		// First and last point need to always be at zero, so skip the 0th element and the final element
-		for (auto i = curve.sweepCurveIterator(POINTS); !i->isEmpty(); i->advance())
-		{
-			path.lineTo(i->getPointTangent().point);
-		}
-		return s.createStroke(path);
+		return generatePath();
 	}
 
 	QRectF FractalCurve::boundingRect() const
 	{
 		return childrenBoundingRect().marginsAdded(QMargins(5, 5, 5, 5));
+	}
+
+	QPainterPath FractalCurve::generatePath() const
+	{
+		qreal length = curve.length();
+
+		// Figure out the number of points to render the line with
+		const int POINTS = std::max(static_cast<int>(length / PERIOD), 2);
+		// Dont draw really really short lines
+		std::vector<float> curveNoise = std::vector<float>(((POINTS + 8) / 8) * 8); // Round to nearest multiple of 8, fastnoise runs better with it
+		noise->GenUniformGrid2D(curveNoise.data(), 0, 0, ((POINTS + 8) / 8) * 8, 1, frequency, seed);
+
+		// Generate path
+		QPainterPath path;
+		if (length < 0.1){
+			return path;
+		}
+		std::vector<float>::iterator ci = curveNoise.begin();
+		for (auto i = curve.sweepLinearCurveIterator(POINTS); !i->isEmpty(); i->advance())
+		{
+			QPointF point = i->getPointTangent().point;
+			QPointF perp = i->getPointTangent().tangent.transposed();
+			perp.setY(-perp.y());
+			//path.moveTo(point);
+			point += Lipuma::normalize(perp) * ((*ci++) * HEIGHT);
+			path.lineTo(point);
+		}
+		path.setElementPositionAt(path.elementCount()-1, end.x(), end.y());
+		return path;
 	}
 
 	void FractalCurve::setStart(QPointF s)
@@ -194,31 +208,7 @@ namespace Lipuma {
 			painter->drawLine(innerEndPt->pos(), end);
 		}
 
-		qreal length = curve.length();
-
-		// Figure out the number of points to render the line with
-		const int POINTS = std::max(static_cast<int>(length / PERIOD), 2);
-		// Dont draw really really short lines
-		if (length < 1)
-			return;
-		std::vector<float> curveNoise = std::vector<float>(((POINTS + 8) / 8) * 8); // Round to nearest multiple of 8, fastnoise runs better with it
-		noise->GenUniformGrid2D(curveNoise.data(), 0, 0, ((POINTS + 8) / 8) * 8, 1, frequency, seed);
-
-		// Generate path
-		QPainterPath path;
-
-		std::vector<float>::iterator ci = curveNoise.begin();
-		for (auto i = curve.sweepLinearCurveIterator(POINTS); !i->isEmpty(); i->advance())
-		{
-			QPointF point = i->getPointTangent().point;
-			QPointF perp = i->getPointTangent().tangent.transposed();
-			perp.setY(-perp.y());
-			//path.moveTo(point);
-			point += Lipuma::normalize(perp) * ((*ci++) * HEIGHT);
-			path.lineTo(point);
-		}
-		// Draw final point
-		path.setElementPositionAt(path.elementCount()-1, end.x(), end.y());
+		QPainterPath path = generatePath();
 		painter->drawPath(path);
 		//painter->drawPath(shape());
 		//painter->drawRect(boundingRect());
