@@ -29,8 +29,15 @@ int main (int argc, char **argv){
 	QObject::connect(loadAction, &QAction::triggered, mainWin,  [mainWin](){
 		QString s = QFileDialog::getOpenFileName(mainWin, "Open Image", "$HOME/Documents/", "Lipuma Files (*.lpm)");
 		QGraphicsScene* scene = Lipuma::LoadScene(s);
-		dynamic_cast<Lipuma::Canvas*>(mainWin->centralWidget())->scene()->clear();
-		dynamic_cast<Lipuma::Canvas*>(mainWin->centralWidget())->setScene(scene);
+		if (scene) // Can return nullptr
+		{
+			dynamic_cast<Lipuma::Canvas*>(mainWin->centralWidget())->scene()->clear();
+			dynamic_cast<Lipuma::Canvas*>(mainWin->centralWidget())->setScene(scene);
+		}
+		else
+		{
+			QMessageBox::warning(mainWin, "File Load Error", "File failed to load.");
+		}
 	});
 
 	QDockWidget *dock = new QDockWidget();
