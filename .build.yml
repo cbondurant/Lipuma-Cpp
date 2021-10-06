@@ -5,13 +5,19 @@ packages:
   - qtbase5-dev
   - gcc
 sources:
-  - https://git.sr.ht/~cbondurant/lipuma
+  - https://git.sr.ht/~cbondurant/Lipuma
+  - https://github.com/Auburn/FastNoise2
 tasks:
-  - setup: |
-      cd lipuma
-      mkdir build
+  - fastnoise: |
+      cd FastNoise2
+      cmake -S . -B build -D FASTNOISE2_NOISETOOL=OFF -D FASTNOISE2_TESTS=OFF
       cd build
-      cmake ..
+      sudo make install
   - build: |
-      cd lipuma/build
+      cd Lipuma
+      cmake -S . -B build
+      cd build
       make
+  - test: |
+      cd Lipuma/build
+      make test
