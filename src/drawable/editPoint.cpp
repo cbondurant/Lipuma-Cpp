@@ -26,6 +26,7 @@ namespace Lipuma {
 
 	void EditPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem */* Option */, QWidget */* widget */){
 		painter->setBrush(QBrush(Qt::white));
+		painter->setPen(Qt::black);
 		painter->drawRect(-5,-5,10,10);
 	}
 

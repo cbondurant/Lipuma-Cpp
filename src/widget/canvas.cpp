@@ -12,6 +12,7 @@
 #include <QKeyEvent>
 #include <QPointF>
 #include <QPainter>
+#include <QPalette>
 
 #include "drawable/fractalLine.hpp"
 #include "tool/fractalTool.hpp"
@@ -29,6 +30,7 @@ namespace Lipuma {
 		setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 		setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 		setSceneRect(-1000, -1000, 2000, 2000);
+		setBackgroundBrush(QBrush(Qt::white, Qt::SolidPattern));
 	}
 
 	void Canvas::wheelEvent(QWheelEvent *e){

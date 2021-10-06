@@ -146,7 +146,10 @@ namespace Lipuma
 		// Set highlight color if selected
 		if (isSelected())
 		{
-			painter->setPen(QColor(255, 0, 0));
+			painter->setPen(Qt::red);
+		}
+		else {
+			painter->setPen(Qt::black);
 		}
 
 		// Dont draw really really short lines

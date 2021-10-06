@@ -203,9 +203,13 @@ namespace Lipuma {
 		// Set highlight color if selected
 		if (isSelected())
 		{
-			painter->setPen(QColor(255, 0, 0));
+			painter->setPen(Qt::red);
 			painter->drawLine(start, innerStartPt->pos());
 			painter->drawLine(innerEndPt->pos(), end);
+		}
+		else
+		{
+			painter->setPen(Qt::black);
 		}
 
 		QPainterPath path = generatePath();
