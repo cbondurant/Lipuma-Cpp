@@ -1,5 +1,7 @@
 # Lipuma
 
+[![builds.sr.ht status](https://builds.sr.ht/~cbondurant.svg?search=~cbondurant/Lipuma)](https://builds.sr.ht/~cbondurant?search=%7Ecbondurant%2FLipuma)
+
 Lipuma is a tool for drawing fantasy maps quickly and efficiently!
 
 This tool is still in early beta, but can be used to quickly generate natural looking river and coastline formations for maps.
