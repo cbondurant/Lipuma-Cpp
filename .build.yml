@@ -1,0 +1,17 @@
+image: debian/stable
+packages:
+  - cmake
+  - catch2
+  - qtbase5-dev
+  - gcc
+sources:
+  - https://git.sr.ht/~cbondurant/lipuma
+tasks:
+  - setup: |
+      cd lipuma
+      mkdir build
+      cd build
+      cmake ..
+  - build: |
+      cd lipuma/build
+      make
