@@ -33,7 +33,7 @@ namespace Lipuma {
 		void keyPressEvent(QKeyEvent *e) override;
 
 	public slots:
-		void toolSelected(Tool *tool);
+		void toolSelected(Lipuma::Tool *tool);
 
 	private:
 		Tool *_currentTool;

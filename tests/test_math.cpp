@@ -8,6 +8,9 @@
 #include "math/points.hpp"
 #include "math/bezier.hpp"
 
+// We have to include this because the test cases trigger this check,
+// but this is test framework so its fine.
+// clazy:excludeall=non-pod-global-static
 TEST_CASE("Consistent Linear interpolation", "[math]"){
 
 	QPointF point(0,0);

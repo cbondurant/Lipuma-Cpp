@@ -14,20 +14,20 @@ namespace Lipuma {
 		setLayout(layout);
 		QPushButton *fractal = new QPushButton("Fractal");
 		QShortcut *fshortcut = new QShortcut(Qt::Key_F, this);
-		connect(fshortcut, &QShortcut::activated, this, [=](){ toolSelected(ToolManager::getFractalTool()); });
-		connect(fractal, &QPushButton::clicked, this, [=](){ toolSelected(ToolManager::getFractalTool()); });
+		connect(fshortcut, &QShortcut::activated, this, [=](){ emit toolSelected(ToolManager::getFractalTool()); });
+		connect(fractal, &QPushButton::clicked, this, [=](){ emit toolSelected(ToolManager::getFractalTool()); });
 		layout->addWidget(fractal, 0, 0);
 
 		QPushButton *select = new QPushButton("Select");
 		QShortcut *sshortcut = new QShortcut(Qt::Key_S, this);
-		connect(sshortcut, &QShortcut::activated, this, [=](){ toolSelected(ToolManager::getSelectionTool()); });
-		connect(select, &QPushButton::clicked, this, [=](){ toolSelected(ToolManager::getSelectionTool()); });
+		connect(sshortcut, &QShortcut::activated, this, [=](){ emit toolSelected(ToolManager::getSelectionTool()); });
+		connect(select, &QPushButton::clicked, this, [=](){ emit toolSelected(ToolManager::getSelectionTool()); });
 		layout->addWidget(select, 0, 1);
 
 		QPushButton *curve = new QPushButton("Curve");
 		QShortcut *cshortcut = new QShortcut(Qt::Key_C, this);
-		connect(cshortcut, &QShortcut::activated, this, [=](){ toolSelected(ToolManager::getFractalCurveTool()); });
-		connect(curve, &QPushButton::clicked, this, [=](){ toolSelected(ToolManager::getFractalCurveTool()); });
+		connect(cshortcut, &QShortcut::activated, this, [=](){ emit toolSelected(ToolManager::getFractalCurveTool()); });
+		connect(curve, &QPushButton::clicked, this, [=](){ emit toolSelected(ToolManager::getFractalCurveTool()); });
 		layout->addWidget(curve, 1, 0);
 	}
 }

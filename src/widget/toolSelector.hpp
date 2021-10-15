@@ -14,7 +14,7 @@ class ToolSelector : public QWidget{
 		ToolSelector(QWidget *w = nullptr);
 
 	signals:
-		void toolSelected(Tool *tool);
+		void toolSelected(Lipuma::Tool *tool);
 };
 
 }
