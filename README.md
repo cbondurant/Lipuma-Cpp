@@ -1,5 +1,7 @@
 # Lipuma
 
+This program has been superseded by [the rust rewrite of it](https://github.com/cbondurant/lipuma-rust) please check it out there instead!
+
 [![builds.sr.ht status](https://builds.sr.ht/~cbondurant.svg?search=~cbondurant/Lipuma)](https://builds.sr.ht/~cbondurant?search=%7Ecbondurant%2FLipuma)
 
 Lipuma is a tool for drawing fantasy maps quickly and efficiently!
